@@ -54,37 +54,35 @@
 ### 在本地和服务器创建密钥
     note: 
 
-	* 至于说ssh秘钥登录原理自行搜索,本文关注点在于实现步骤
+* 至于说ssh秘钥登录原理自行搜索,本文关注点在于实现步骤
 
-	* 需要在本地电脑和服务器上装好git Bash(Mac系统没用过,好像不用get也行,反正有个终端能执行shell就行)
-	* 需要在本地和服务器都要执行一边创建过程,创建过程都是一样的
-	* 检查电脑中是否已经存在ssh key   ll -a ~/.ssh 如果现实不存在文件或文件夹则继续,否则可以跳过也可以重新生成一次(会覆盖掉以前的ssh key文件)
+* 需要在本地电脑和服务器上装好git Bash(Mac系统没用过,好像不用get也行,反正有个终端能执行shell就行)
+* 需要在本地和服务器都要执行一边创建过程,创建过程都是一样的
+* 检查电脑中是否已经存在ssh key   ll -a ~/.ssh 如果现实不存在文件或文件夹则继续,否则可以跳过也可以重新生成一次(会覆盖掉以前的ssh key文件)
 
 
 
-	1. 先在本地创建 ssh key
+### 	1. 先在本地创建 ssh key
 
-        ssh-keygen -t rsa -b 4096 -C "邮箱地址"
-        然后不需要输入密码,直接回车回车(否则会很麻烦)
+        **ssh-keygen -t rsa -b 4096 -C "邮箱地址"**
+        然后不需要输入密码,直接回车回车(**否则会很麻烦**)
         检查 cd ~ 账户下 ~/.ssh文件夹下是否多了3个文件
-          ~/.ssh/id_rsa            私钥
-          ~/.ssh/id_rsa.pub     公钥
+          ~/.ssh/id_rsa             私钥
+          ~/.ssh/id_rsa.pub     	公钥
           ~/.ssh/know_hosts    主机记录,第一次登陆之后主机信息,当你敲yes之后会被记录到这个文件
-    
-
-		 ![image](./images/ssh_show.png)
+>
+		 >![image](./images/ssh_show.png)
 		
-	1. 将ssh key 加入代理
+### 	2. 将ssh key 加入代理
 
-           
         eval $(ssh-agent -s)     启动 ssh-agent
         ssh-add ~/.ssh/id_rsa  将私钥加入代理中
         
-       3. 将公钥添加到github上
+###     3. 将公钥添加到github上
              使用 cat ~/.ssh/id_rsa.pub   查看并复制公钥
             登陆你的github账户>头像下找到setttings > SSH >粘贴
  
-       4. 测试下是否配置成功
+###     4. 测试下是否配置成功
         ssh -T git@github.com
 
         

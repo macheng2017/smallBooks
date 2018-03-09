@@ -70,7 +70,7 @@
           ~/.ssh/id_rsa            私钥
           ~/.ssh/id_rsa.pub     公钥
           ~/.ssh/know_hosts    主机记录,第一次登陆之后主机信息,当你敲yes之后会被记录到这个文件
-        (http://github.com/macheng2017/smallBooks/raw/master/images/ssh_show.png)
+        ![image](http://github.com/macheng2017/smallBooks/raw/master/images/ssh_show.png)
 
 	1. 将ssh key 加入代理
 

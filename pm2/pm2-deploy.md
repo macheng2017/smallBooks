@@ -1,6 +1,6 @@
-为什么要用pm2?
+>为什么要用pm2?
 
-以前部署项目的方式 
+## 以前部署项目的方式 
 
 	1. 从github上下载
 	2. 打包后通过ssh 或者FTP上传到服务器,
@@ -13,18 +13,18 @@
 
         ....
 
-增加一个新功能后者一行代码
+### 增加一个新功能后者一行代码
         重复1-8
 
-使用pm2以后的部署方式,当所有配置完成后三行命令
+## 使用pm2以后的部署方式,当所有配置完成后三行命令
 
-	1. git push                                                                  推送到github或者码云上
-	2. pm2 deploy ecosystem.json production setup     第一次从github上拉取到服务器
-	3. pm2 deploy ecosystem.json production               部署并运行 看到 success   
-	4. 如果报错使用pm2 logs 重复1,3
+ 1. git push                                                                  推送到github或者码云上
+ 2. pm2 deploy ecosystem.json production setup     第一次从github上拉取到服务器
+ 3. pm2 deploy ecosystem.json production               部署并运行 看到 success   
+ 4. 如果报错使用pm2 logs 重复1,3
 
 
-增加一个新功能后者一行代码
+### 增加一个新功能后者一行代码
 
 	1. git push 
 
@@ -51,7 +51,7 @@
 
 
 
-在本地和服务器创建密钥
+### 在本地和服务器创建密钥
     note: 
 
 	* 至于说ssh秘钥登录原理自行搜索,本文关注点在于实现步骤
@@ -71,8 +71,8 @@
           ~/.ssh/id_rsa.pub     公钥
           ~/.ssh/know_hosts    主机记录,第一次登陆之后主机信息,当你敲yes之后会被记录到这个文件
     
-		 ![image](https://github.com/macheng2017/smallBooks/blob/master/pm2/images/ssh_show.png)
-
+		 ![image](./images/ssh_show.png)
+		
 	1. 将ssh key 加入代理
 
            

@@ -71,7 +71,7 @@
           ~/.ssh/id_rsa.pub     	公钥
           ~/.ssh/know_hosts    主机记录,第一次登陆之后主机信息,当你敲yes之后会被记录到这个文件
 
-          
+
 ![image](./images/ssh_show.png)
 
 
@@ -200,9 +200,10 @@ server.listen(port, hostname, () => {
 > 在跟着该教程做下去会有几个坑
 > 1. 在第一次部署的时候,会遇到权限问题,还是因为使用的是子账号新建的 /www/website/       权限不够 使用 chmod 777 website 修改权限即可
     
+参考:
 
-  https://help.github.com/articles/connecting-to-github-with-ssh/
-
+https://help.github.com/articles/connecting-to-github-with-ssh/
+http://pm2.keymetrics.io/docs/usage/deployment/
 
 
 

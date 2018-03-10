@@ -1,20 +1,20 @@
->为什么要用pm2?
+> 为什么要用pm2?
 
 ## 以前部署项目的方式 
 
-	1. 从github上下载
-	2. 打包后通过ssh 或者FTP上传到服务器,
-	3. 在服务器上找到并解压缩,放到相应的文件夹
-	4. 使用npm install 安装依赖 以及编译css 压缩js文件等等
-	5. 删除压缩包以及设置文件夹权限 
-	6. 运行项目,如果报错
-	7. 切换文件夹查看日志文件
-	8. 在本地修改然后循环步骤2-7直到完美运行
+>	1. 从github上下载
+>	2. 打包后通过ssh 或者FTP上传到服务器,
+>	3. 在服务器上找到并解压缩,放到相应的文件夹
+>	4. 使用npm install 安装依赖 以及编译css 压缩js文件等等
+>	5. 删除压缩包以及设置文件夹权限 
+>	6. 运行项目,如果报错
+>	7. 切换文件夹查看日志文件
+>	8. 在本地修改然后循环步骤2-7直到完美运行
+>        
+>        ....
 
-        ....
-
-### 增加一个新功能后者一行代码
-        重复1-8
+#### 增加一个新功能后者一行代码
+ >       重复1-8
 
 ## 使用pm2以后的部署方式,当所有配置完成后三行命令
 
@@ -70,6 +70,8 @@
           ~/.ssh/id_rsa             私钥
           ~/.ssh/id_rsa.pub     	公钥
           ~/.ssh/know_hosts    主机记录,第一次登陆之后主机信息,当你敲yes之后会被记录到这个文件
+![image](./images/ssh_show.png)
+
 
 		
 ### 	2. 将ssh key 加入代理
@@ -83,16 +85,119 @@
  
 ###     4. 测试下是否配置成功
         ssh -T git@github.com
-
-        
         
         好了已经打通了,本地与GitHub之间的无密码登录了
 
-        服务器使用相同的命令在子账号下使用如下命令,不要在root账户下操作
+
+>### **服务器上的操作和本地一样,在子账号下使用如下命令,不要在root账户下操作**
+
+![image](./images/server-ls.jpg)
+
+1. 最关键的一步就是需要在服务器上新建一个填写public key的文件
+vim ~/.ssh/authorized_keys
+
+        对vim使用不熟悉的同学可以自行搜索
+
+2. 然后使用
+cat ~/.ssh/id_rsa.pub 复制本地的public key 粘贴进去
+
+> 在操作的过程中可以多开几个git Bash 链接到服务器以防自己操作失误又顺手关闭,导致自己都进不去自己的服务器
+
+### 打通服务器与github上的ssh key的链接
         
+1. 在服务器上执行 cat ~/.ssh/id_rsa.pub
+2. 复制key粘贴到 你的github账户>头像下找到setttings > SSH >新建key>粘贴
+3. 测试是否能用
+        
+         mkdir ~/test 
+         cd test
+         git clone 任意仓库的ssh地址,是ssh地址
+
+![image](./images/github_ssh.jpg)
+
+4. 测试本地到服务器的链接
+        ssh userName@xxxx.xxx.xxx.xxx
+  
+  
+  恭喜你,你已经完成了 local <==>yourserver <==> you github 三者 ssh key 的互通
+
+  ## **接下来就是配置node pm2 了** 
+
+        我假设你的本地电脑和服务器的node,pm2 已经安装完成并能正常运行
+
+1. 在本地和github新建一个项目并设置好,本地项目与github的映射
+2. 在本地github项目根文件夹下    
+3. new一个ecosystem.json文件
+  
+  ![image](./images/ecosystem.jpg)
+  
+  
+  ```JavaScript
+        {
+    "apps":[
+        {
+            "name":"Website",  //项目名称
+            "script":"app.js", //入口文件
+            "env":{
+                "COMMON_VARIABLE": "true" 
+            },
+            "env_production" : {
+                "NODE_ENV": "production"
+              }
+        }
+    ],
+    "deploy":{
+        "production":{
+            "user":"userName",       // 服务器登录用户名
+            "host":["120.xxx.xxx.xxx"], //服务器ip
+            "port":"22",           //ssh 端口如果没改过为 22          
+            "ref":"origin/master",
+            "repo":"git@github.com:macheng2017/study.git", //git仓库 项目ssh地址
+            "path":"/www/website/production",//服务器部署地址 需要事先在服务器上将/www/website/ 新建出来
+            "ssh_options":"StrictHostKeyChecking=no",
+            "env":{
+                "NODE_ENV":"production"
+            }
+        }
+    }
+}
+  ```
+  4. 以上面为模板,将加注释部分修改为自己的参数
+  5. 在服务器上新建  
+               sudo mkdir  /www/
+               sudo mkdir /www/website/
+> NOTE: 
+>1. 由于不是在用户自己的home文件夹中新建文件所以需要sudo 提升权限
+>2. 这里有个坑等你们踩过之后再说
+
+  6. 测试,新建app.js 我们就以node.js官网上的示例
+
+```JavaScript
+const http = require("http");
+
+const hostname = "0.0.0.0";
+const port = 3000;
+
+const server = http.createServer((req, res) => {
+  res.statusCode = 200;
+  res.setHeader("Content-Type", "text/plain");
+  res.write('Hello world');
+  res.end();
+});
+server.listen(port, hostname, () => {
+  console.log(`Server running at http://${hostname}:${port}/`);
+});
+```
+6. 使用
+       
+        pm2 deploy ecosystem.json production setup // 第一次部署
+        //在本地执行脚本会在服务器中
+        pm2 deploy ecosystem.json production  运行
 
 
-![image](./images/ssh_show.png)
+> 在跟着该教程做下去会有几个坑
+> 1. 在第一次部署的时候,会遇到权限问题,还是因为使用的是子账号新建的 /www/website/       权限不够 使用 chmod 777 website 修改权限即可
+    
 
   https://help.github.com/articles/connecting-to-github-with-ssh/
 
